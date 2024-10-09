@@ -9,20 +9,22 @@ import (
 	jwtmiddleware "github.com/shawnsey/LegoMOC/LegoStore/middleware"
 )
 
-func loadRoutes() *chi.Mux {
+func (app *App) loadRoutes() {
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	router.With(jwtmiddleware.EnsureValidToken()).Route("/orders", loadOrderRoutes)
+	router.With(jwtmiddleware.EnsureValidToken()).Route("/orders", app.loadOrderRoutes)
 
-	return router
+	app.router = router
 }
 
-func loadOrderRoutes(router chi.Router) {
-	orderHandler := &handler.Order{}
+func (app *App) loadOrderRoutes(router chi.Router) {
+	orderHandler := &handler.Order{
+		db: app.DB,
+	}
 	router.Post("/", orderHandler.Create)
 	router.Get("/", orderHandler.List)
 	router.Get("/{id}", orderHandler.GetById)

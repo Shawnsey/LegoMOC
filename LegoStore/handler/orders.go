@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 )
 
-type Order struct{}
+type Order struct {
+	db sql.DB
+}
 
 func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("create order")

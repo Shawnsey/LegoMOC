@@ -6,16 +6,22 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"time"
+	"strconv"
 
-	"github.com/shawnsey/LegoMOC/LegoStore/database/order"
+	"github.com/go-chi/chi/v5"
+	"github.com/shawnsey/LegoMOC/LegoStore/database/daos"
 	"github.com/shawnsey/LegoMOC/LegoStore/sql/LegoMOC/public/model"
 )
 
-type Order struct {
-	DB *order.Postgresdb
+type OrderHandler struct {
+    OrderDao daos.OrderDao
 }
 
-func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
+func NewOrderHandler(OrderDao daos.OrderDao) *OrderHandler {
+    return &OrderHandler{OrderDao: OrderDao}
+}
+
+func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		CustomerId int32   `json:"customer_id"`
 		LineItems  *string `json:"line_items"`
@@ -36,7 +42,7 @@ func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
 		CreatedAt:  &now,
 	}
 
-	err := o.DB.Insert(r.Context(), order)
+	err := o.OrderDao.Insert(r.Context(), order)
 	if err != nil {
 		fmt.Println("failed to insert", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -53,19 +59,69 @@ func (o *Order) Create(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 	w.WriteHeader(http.StatusCreated)
 }
-func (o *Order) List(w http.ResponseWriter, r *http.Request) {
+func (o *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("List orders")
 
 }
-func (o *Order) GetById(w http.ResponseWriter, r *http.Request) {
+func (o *OrderHandler) GetById(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Get order")
 
 }
-func (o *Order) UpdateById(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Update order")
+func (o *OrderHandler) UpdateById(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "ID")
+	parsedId, err := o.parseInt32(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	updatedOrder, err := o.OrderDao.Update(r.Context(), parsedId)
+	if err != nil {
+		fmt.Println("Failed to delete order")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	} 
+	
+	res, err := json.Marshal(updatedOrder)
+	if err != nil {
+		fmt.Println("failed to marshall", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(res)
+	w.WriteHeader(http.StatusAccepted)
 
 }
-func (o *Order) DeleteById(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Delete order")
+func (o *OrderHandler) DeleteById(w http.ResponseWriter, r *http.Request) {
 
+	id := chi.URLParam(r, "ID")
+	parsedId, err := o.parseInt32(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+
+	err = o.OrderDao.Delete(r.Context(),parsedId)
+	if err != nil {
+		fmt.Println("Failed to delete order")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+}
+
+func (o *OrderHandler) parseInt32(id string) (int32, error) {
+
+    num, err := strconv.ParseInt(id, 10, 32) // Base 10, 32-bit size
+    if err != nil {
+        return 0, err // Return the parsing error if it fails
+    }
+	
+    // Convert the int64 to int32 after ensuring it's in the valid range
+    if num < int64(^int32(0)) && num > int64(int32(uint32(0))) { // Check the int32 range
+        return 0, fmt.Errorf("value out of range for int32: %s", id)
+    }
+
+    return int32(num), nil
 }

@@ -2,18 +2,18 @@ package application
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/shawnsey/LegoMOC/LegoStore/database"
-	"github.com/shawnsey/LegoMOC/LegoStore/database/order"
 )
 
 type App struct {
 	router http.Handler
-	DB     *order.Postgresdb
+	DB     *sql.DB
 }
 
 func New() *App {
@@ -35,11 +35,7 @@ func (app *App) Start(ctx context.Context) error {
 		return fmt.Errorf("failed to connect to db: %w", err)
 	}
 
-	app.DB = &order.Postgresdb{
-		Client: *psql,
-	}
-
-
+	app.DB = psql
 
 	defer func() {
 		if err := app.CloseDB(); err != nil {
@@ -68,7 +64,7 @@ func (app *App) Start(ctx context.Context) error {
 }
 
 func (app *App) CloseDB() error {
-	if err := app.DB.Client.Close(); err != nil {
+	if err := app.DB.Close(); err != nil {
 		return fmt.Errorf("could not close db: %v", err)
 	}
 	fmt.Println("Database connection closed")

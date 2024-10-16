@@ -25,8 +25,9 @@ func (app *App) loadRoutes() {
 
 func (app *App) loadOrderRoutes(router chi.Router) {
 	orderHandler := handler.OrderHandler{
-		OrderDao: *daos.NewOrderDao(app.DB),
-
+		OrderDao: &daos.OrderPsqlDao{
+			Client: app.DB,
+		},
 	}
 	router.Post("/", orderHandler.Create)
 	router.Get("/", orderHandler.List)
@@ -38,12 +39,14 @@ func (app *App) loadOrderRoutes(router chi.Router) {
 
 func (app *App) loadCreationRoutes(router chi.Router) {
 	creationHandler := handler.CreationsHandler{
-		CreationsDao: *daos.NewCreationDao(app.DB),
+		CreationsDao: &daos.CreationsPsqlDao{
+			Client: app.DB,
+		},
 	}
 
 	router.Post("/", creationHandler.Create)
 	router.Get("/", creationHandler.List)
-	router.Get("/search", creationHandler.search)
+	router.Get("/search", creationHandler.Search)
 	router.Get("/{id}", creationHandler.GetById)
 	router.Put("/{id}", creationHandler.UpdateById)
 	router.Delete("/{id}", creationHandler.DeleteById)

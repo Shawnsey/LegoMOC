@@ -30,12 +30,11 @@ func (app *App) Start(ctx context.Context) error {
 		Handler: app.router,
 	}
 	var err error 
-	psql, err := database.InitDB(os.Getenv("POSTGRES_URL"))
+	app.DB, err = database.InitDB(os.Getenv("POSTGRES_URL"))
 	if err != nil {
 		return fmt.Errorf("failed to connect to db: %w", err)
 	}
 
-	app.DB = psql
 
 	defer func() {
 		if err := app.CloseDB(); err != nil {

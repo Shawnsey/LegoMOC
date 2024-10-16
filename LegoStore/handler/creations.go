@@ -10,10 +10,6 @@ type CreationsHandler struct {
     CreationsDao daos.CreationsDao
 }
 
-func NewUserHandler(CreationsDao daos.CreationsDao) *CreationsHandler {
-    return &CreationsHandler{CreationsDao: CreationsDao}
-}
-
 func (c *CreationsHandler) Create(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("add creation")
 }
@@ -32,18 +28,18 @@ func (c *CreationsHandler) Search(w http.ResponseWriter, r *http.Request) {
 }
 
 func (o *CreationsHandler) List(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("List orders")
+	fmt.Println("Add List creations")
 
 }
 func (o *CreationsHandler) GetById(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Get order")
+	fmt.Println("Add Get creation")
 
 }
 func (o *CreationsHandler) UpdateById(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Update order")
+	fmt.Println("Add Update creation")
 
 }
 func (o *CreationsHandler) DeleteById(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Delete order")
+	fmt.Println("Add Delete creation")
 
 }

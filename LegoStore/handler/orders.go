@@ -17,10 +17,6 @@ type OrderHandler struct {
     OrderDao daos.OrderDao
 }
 
-func NewOrderHandler(OrderDao daos.OrderDao) *OrderHandler {
-    return &OrderHandler{OrderDao: OrderDao}
-}
-
 func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		CustomerId int32   `json:"customer_id"`
@@ -60,11 +56,11 @@ func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 func (o *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("List orders")
+	fmt.Println("Add List orders")
 
 }
 func (o *OrderHandler) GetById(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Get order")
+	fmt.Println("Add Get order")
 
 }
 func (o *OrderHandler) UpdateById(w http.ResponseWriter, r *http.Request) {

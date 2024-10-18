@@ -19,7 +19,7 @@ type piecesTable struct {
 	// Columns
 	ID          postgres.ColumnInteger
 	Description postgres.ColumnString
-	ImageID     postgres.ColumnInteger
+	ImageLink   postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -62,9 +62,9 @@ func newPiecesTableImpl(schemaName, tableName, alias string) piecesTable {
 	var (
 		IDColumn          = postgres.IntegerColumn("id")
 		DescriptionColumn = postgres.StringColumn("description")
-		ImageIDColumn     = postgres.IntegerColumn("image_id")
-		allColumns        = postgres.ColumnList{IDColumn, DescriptionColumn, ImageIDColumn}
-		mutableColumns    = postgres.ColumnList{DescriptionColumn, ImageIDColumn}
+		ImageLinkColumn   = postgres.StringColumn("image_link")
+		allColumns        = postgres.ColumnList{IDColumn, DescriptionColumn, ImageLinkColumn}
+		mutableColumns    = postgres.ColumnList{DescriptionColumn, ImageLinkColumn}
 	)
 
 	return piecesTable{
@@ -73,7 +73,7 @@ func newPiecesTableImpl(schemaName, tableName, alias string) piecesTable {
 		//Columns
 		ID:          IDColumn,
 		Description: DescriptionColumn,
-		ImageID:     ImageIDColumn,
+		ImageLink:   ImageLinkColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

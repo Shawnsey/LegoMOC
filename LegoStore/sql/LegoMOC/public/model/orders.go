@@ -8,12 +8,13 @@
 package model
 
 import (
+	"github.com/google/uuid"
 	"time"
 )
 
-type Order struct {
-	OrderID     int32 `sql:"primary_key"`
-	CustomerID  int32
+type Orders struct {
+	OrderID     uuid.UUID `sql:"primary_key"`
+	CustomerID  *uuid.UUID
 	LineItems   *string
 	CreatedAt   *time.Time
 	ShippedAt   *time.Time

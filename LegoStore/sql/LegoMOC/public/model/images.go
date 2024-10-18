@@ -7,7 +7,11 @@
 
 package model
 
+import (
+	"github.com/google/uuid"
+)
+
 type Images struct {
-	ID        int32 `sql:"primary_key"`
-	ImageLink string
+	ID        uuid.UUID `sql:"primary_key"`
+	ImageLink *string
 }

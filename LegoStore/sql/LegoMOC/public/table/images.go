@@ -17,7 +17,7 @@ type imagesTable struct {
 	postgres.Table
 
 	// Columns
-	ID        postgres.ColumnInteger
+	ID        postgres.ColumnString
 	ImageLink postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
@@ -59,8 +59,8 @@ func newImagesTable(schemaName, tableName, alias string) *ImagesTable {
 
 func newImagesTableImpl(schemaName, tableName, alias string) imagesTable {
 	var (
-		IDColumn        = postgres.IntegerColumn("id")
-		ImageLinkColumn = postgres.StringColumn("image_link")
+		IDColumn        = postgres.StringColumn("id")
+		ImageLinkColumn = postgres.StringColumn("imageLink")
 		allColumns      = postgres.ColumnList{IDColumn, ImageLinkColumn}
 		mutableColumns  = postgres.ColumnList{ImageLinkColumn}
 	)

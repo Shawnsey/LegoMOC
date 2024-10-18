@@ -17,12 +17,12 @@ type paymentInfoTable struct {
 	postgres.Table
 
 	// Columns
-	ID                  postgres.ColumnInteger
-	UserID              postgres.ColumnInteger
-	CreditCardType      postgres.ColumnString
-	EncryptedCardNumber postgres.ColumnString
-	ExpirationDate      postgres.ColumnDate
-	SecurityCode        postgres.ColumnString
+	ID                  postgres.ColumnString
+	UserID              postgres.ColumnString
+	CreditcardType      postgres.ColumnString
+	EncryptedCardNumber postgres.ColumnFloat
+	Expiration          postgres.ColumnString
+	SecurityCode        postgres.ColumnFloat
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -63,14 +63,14 @@ func newPaymentInfoTable(schemaName, tableName, alias string) *PaymentInfoTable 
 
 func newPaymentInfoTableImpl(schemaName, tableName, alias string) paymentInfoTable {
 	var (
-		IDColumn                  = postgres.IntegerColumn("id")
-		UserIDColumn              = postgres.IntegerColumn("user_id")
-		CreditCardTypeColumn      = postgres.StringColumn("credit_card_type")
-		EncryptedCardNumberColumn = postgres.StringColumn("encrypted_card_number")
-		ExpirationDateColumn      = postgres.DateColumn("expiration_date")
-		SecurityCodeColumn        = postgres.StringColumn("security_code")
-		allColumns                = postgres.ColumnList{IDColumn, UserIDColumn, CreditCardTypeColumn, EncryptedCardNumberColumn, ExpirationDateColumn, SecurityCodeColumn}
-		mutableColumns            = postgres.ColumnList{UserIDColumn, CreditCardTypeColumn, EncryptedCardNumberColumn, ExpirationDateColumn, SecurityCodeColumn}
+		IDColumn                  = postgres.StringColumn("id")
+		UserIDColumn              = postgres.StringColumn("user_id")
+		CreditcardTypeColumn      = postgres.StringColumn("creditcard_type")
+		EncryptedCardNumberColumn = postgres.FloatColumn("encrypted_card_number")
+		ExpirationColumn          = postgres.StringColumn("expiration")
+		SecurityCodeColumn        = postgres.FloatColumn("security_code")
+		allColumns                = postgres.ColumnList{IDColumn, UserIDColumn, CreditcardTypeColumn, EncryptedCardNumberColumn, ExpirationColumn, SecurityCodeColumn}
+		mutableColumns            = postgres.ColumnList{UserIDColumn, CreditcardTypeColumn, EncryptedCardNumberColumn, ExpirationColumn, SecurityCodeColumn}
 	)
 
 	return paymentInfoTable{
@@ -79,9 +79,9 @@ func newPaymentInfoTableImpl(schemaName, tableName, alias string) paymentInfoTab
 		//Columns
 		ID:                  IDColumn,
 		UserID:              UserIDColumn,
-		CreditCardType:      CreditCardTypeColumn,
+		CreditcardType:      CreditcardTypeColumn,
 		EncryptedCardNumber: EncryptedCardNumberColumn,
-		ExpirationDate:      ExpirationDateColumn,
+		Expiration:          ExpirationColumn,
 		SecurityCode:        SecurityCodeColumn,
 
 		AllColumns:     allColumns,

@@ -8,14 +8,14 @@
 package model
 
 import (
-	"time"
+	"github.com/google/uuid"
 )
 
 type PaymentInfo struct {
-	ID                  int32 `sql:"primary_key"`
-	UserID              *int32
-	CreditCardType      *string
-	EncryptedCardNumber string
-	ExpirationDate      time.Time
-	SecurityCode        *string
+	ID                  uuid.UUID `sql:"primary_key"`
+	UserID              *uuid.UUID
+	CreditcardType      *string
+	EncryptedCardNumber *float64
+	Expiration          *string
+	SecurityCode        *float64
 }

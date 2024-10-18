@@ -9,6 +9,6 @@ package model
 
 type Pieces struct {
 	ID          int32 `sql:"primary_key"`
-	Description string
-	ImageID     int32
+	Description *string
+	ImageLink   *string
 }

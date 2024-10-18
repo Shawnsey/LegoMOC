@@ -17,11 +17,11 @@ type creationsTable struct {
 	postgres.Table
 
 	// Columns
-	ID               postgres.ColumnInteger
+	ID               postgres.ColumnString
 	Name             postgres.ColumnString
-	CreatorID        postgres.ColumnInteger
+	CreatorID        postgres.ColumnString
 	InstructionsLink postgres.ColumnString
-	ImageID          postgres.ColumnInteger
+	ImageID          postgres.ColumnString
 	Price            postgres.ColumnFloat
 
 	AllColumns     postgres.ColumnList
@@ -63,11 +63,11 @@ func newCreationsTable(schemaName, tableName, alias string) *CreationsTable {
 
 func newCreationsTableImpl(schemaName, tableName, alias string) creationsTable {
 	var (
-		IDColumn               = postgres.IntegerColumn("id")
+		IDColumn               = postgres.StringColumn("id")
 		NameColumn             = postgres.StringColumn("name")
-		CreatorIDColumn        = postgres.IntegerColumn("creator_id")
+		CreatorIDColumn        = postgres.StringColumn("creator_id")
 		InstructionsLinkColumn = postgres.StringColumn("instructions_link")
-		ImageIDColumn          = postgres.IntegerColumn("image_id")
+		ImageIDColumn          = postgres.StringColumn("image_id")
 		PriceColumn            = postgres.FloatColumn("price")
 		allColumns             = postgres.ColumnList{IDColumn, NameColumn, CreatorIDColumn, InstructionsLinkColumn, ImageIDColumn, PriceColumn}
 		mutableColumns         = postgres.ColumnList{NameColumn, CreatorIDColumn, InstructionsLinkColumn, ImageIDColumn, PriceColumn}

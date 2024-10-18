@@ -17,12 +17,13 @@ type usersTable struct {
 	postgres.Table
 
 	// Columns
-	ID          postgres.ColumnInteger
+	ID          postgres.ColumnString
 	FirstName   postgres.ColumnString
 	LastName    postgres.ColumnString
 	Email       postgres.ColumnString
 	Address     postgres.ColumnString
-	PhoneNumber postgres.ColumnString
+	PhoneNumber postgres.ColumnFloat
+	CreatorFlag postgres.ColumnBool
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -63,14 +64,15 @@ func newUsersTable(schemaName, tableName, alias string) *UsersTable {
 
 func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 	var (
-		IDColumn          = postgres.IntegerColumn("id")
+		IDColumn          = postgres.StringColumn("id")
 		FirstNameColumn   = postgres.StringColumn("first_name")
 		LastNameColumn    = postgres.StringColumn("last_name")
 		EmailColumn       = postgres.StringColumn("email")
 		AddressColumn     = postgres.StringColumn("address")
-		PhoneNumberColumn = postgres.StringColumn("phone_number")
-		allColumns        = postgres.ColumnList{IDColumn, FirstNameColumn, LastNameColumn, EmailColumn, AddressColumn, PhoneNumberColumn}
-		mutableColumns    = postgres.ColumnList{FirstNameColumn, LastNameColumn, EmailColumn, AddressColumn, PhoneNumberColumn}
+		PhoneNumberColumn = postgres.FloatColumn("phone_number")
+		CreatorFlagColumn = postgres.BoolColumn("creator_flag")
+		allColumns        = postgres.ColumnList{IDColumn, FirstNameColumn, LastNameColumn, EmailColumn, AddressColumn, PhoneNumberColumn, CreatorFlagColumn}
+		mutableColumns    = postgres.ColumnList{FirstNameColumn, LastNameColumn, EmailColumn, AddressColumn, PhoneNumberColumn, CreatorFlagColumn}
 	)
 
 	return usersTable{
@@ -83,6 +85,7 @@ func newUsersTableImpl(schemaName, tableName, alias string) usersTable {
 		Email:       EmailColumn,
 		Address:     AddressColumn,
 		PhoneNumber: PhoneNumberColumn,
+		CreatorFlag: CreatorFlagColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

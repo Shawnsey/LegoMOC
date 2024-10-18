@@ -7,11 +7,15 @@
 
 package model
 
+import (
+	"github.com/google/uuid"
+)
+
 type Creations struct {
-	ID               int32 `sql:"primary_key"`
-	Name             string
-	CreatorID        *int32
-	InstructionsLink string
-	ImageID          *int32
-	Price            float64
+	ID               uuid.UUID `sql:"primary_key"`
+	Name             *string
+	CreatorID        *uuid.UUID
+	InstructionsLink *string
+	ImageID          *uuid.UUID
+	Price            *float64
 }

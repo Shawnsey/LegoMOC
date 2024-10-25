@@ -1,0 +1,65 @@
+PROJECT_ID                      NAME
+ad-management-233817            Ad-Management
+ad-manager-360-403914           Ad Manager 360
+adserving-edge                  Adserving Edge
+adserving-star                  Adserving Star
+invidi-artifacts                invidi-artifacts
+invidi-codey-evaluation         INVIDI-codey-evaluation
+invidi-pulse                    Invidi Pulse
+invidi-shared                   Invidi Shared
+invidi-shared-vpc               invidi-shared-vpc
+invidi-sre                      Invidi SRE
+invidi-symphonia                INVIDI Symphonia
+prod-invidi-dataflow            Production Dataflow
+pulse-psg                       pulse-psg
+sthlm-infra                     Sthlm Infra
+strange-bird-433111-r2          My First Project
+sys-02294390091083735793443529  Copy of setReqiredParams  old
+sys-03641477714377032882497703  setRequiredParams
+sys-04089202193153798573284621  Copy of setRequiredParams
+sys-04175998049215777612018913  Copy of setReqiredParams  old
+sys-05205599128679052940515170  setRequiredParams
+sys-05955061015916100222318170  Copy of setReqiredParams  old
+sys-21467932161187284992703396  Copy of setRequiredParams
+sys-35833967703424723429525225  setRequiredParams
+sys-50238473093658247694598858  setRequiredParams
+sys-68660637374592453881271198  Copy of setRequiredParams
+sys-78579113072573449982002467  setRequiredParams
+test-ad-break-predictor         test-ad-break-predictor
+test-data-platform-422715       test-data-platform
+test-invidi-dataflow            Test Dataflow
+test-invidi-pulse               Test Invidi Pulse
+test-invidi-shared              Test Invidi Shared
+PROJECT_ID                      NAME
+ad-management-233817            Ad-Management
+ad-manager-360-403914           Ad Manager 360
+adserving-edge                  Adserving Edge
+adserving-star                  Adserving Star
+invidi-artifacts                invidi-artifacts
+invidi-codey-evaluation         INVIDI-codey-evaluation
+invidi-pulse                    Invidi Pulse
+invidi-shared                   Invidi Shared
+invidi-shared-vpc               invidi-shared-vpc
+invidi-sre                      Invidi SRE
+invidi-symphonia                INVIDI Symphonia
+prod-invidi-dataflow            Production Dataflow
+pulse-psg                       pulse-psg
+sthlm-infra                     Sthlm Infra
+strange-bird-433111-r2          My First Project
+sys-02294390091083735793443529  Copy of setReqiredParams  old
+sys-03641477714377032882497703  setRequiredParams
+sys-04089202193153798573284621  Copy of setRequiredParams
+sys-04175998049215777612018913  Copy of setReqiredParams  old
+sys-05205599128679052940515170  setRequiredParams
+sys-05955061015916100222318170  Copy of setReqiredParams  old
+sys-21467932161187284992703396  Copy of setRequiredParams
+sys-35833967703424723429525225  setRequiredParams
+sys-45187470202985806690381893  setRequiredParams
+sys-50238473093658247694598858  setRequiredParams
+sys-68660637374592453881271198  Copy of setRequiredParams
+sys-78579113072573449982002467  setRequiredParams
+test-ad-break-predictor         test-ad-break-predictor
+test-data-platform-422715       test-data-platform
+test-invidi-dataflow            Test Dataflow
+test-invidi-pulse               Test Invidi Pulse
+test-invidi-shared              Test Invidi Shared

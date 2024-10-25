@@ -108,3 +108,14 @@ values
     ARRAY['98311391-88ca-48c7-ad1d-5ccb7fcb4e19'::uuid],
     now()
 );
+
+insert into public.creations
+values
+(
+'8b210008-c5d8-4d5d-8edc-870fd7507090',
+'This-thing',
+'98311391-88ca-48c7-ad1d-5ccb7fcb4e19',
+'https://s3.creations/8b210008-c5d8-4d5d-8edc-870fd7507090',
+'40dc3b16-5028-4623-9402-bfb830297c60',
+44.99   
+);

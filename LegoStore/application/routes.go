@@ -25,14 +25,13 @@ func (app *App) loadRoutes() {
 
 func (app *App) loadOrderRoutes(router chi.Router) {
 	orderHandler := handler.OrderHandler{
-		OrderDao: &daos.OrderPsqlDao{
-			Client: app.DB,
-		},
-	}
+		OrderDao: daos.NewOrderPsqlDao(app.DB),
+		}
+	
 	router.Post("/", orderHandler.Create)
 	router.Get("/", orderHandler.List)
-	router.Get("/{id}", orderHandler.GetById)
-	router.Put("/{id}", orderHandler.UpdateById)
+	router.Get("/{id}", orderHandler.Get)
+	router.Put("/{id}", orderHandler.Update)
 	router.Delete("/{id}", orderHandler.DeleteById)
 
 }

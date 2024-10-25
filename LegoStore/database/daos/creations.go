@@ -4,19 +4,20 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"math/rand/v2"
 
-	. "github.com/go-jet/jet/v2/postgres"
+	jet "github.com/go-jet/jet/v2/postgres"
+	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 
 	"github.com/shawnsey/LegoMOC/LegoStore/sql/LegoMOC/public/model"
-	"github.com/shawnsey/LegoMOC/LegoStore/sql/LegoMOC/public/table"
+	. "github.com/shawnsey/LegoMOC/LegoStore/sql/LegoMOC/public/table"
 )
 
 type CreationsDao interface {
 	Insert(ctx context.Context, model model.Creations) error
-	Delete(ctx context.Context, id int32) error
-	Update(ctx context.Context, id int32) (model.Creations, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+	Update(ctx context.Context, id uuid.UUID) (model.Creations, error)
+	List(ctx context.Context, id uuid.UUID) ([]model.Creations, error)
 }
 
 type CreationsPsqlDao struct {
@@ -28,11 +29,16 @@ func NewCreationsPsqlDao(db *sql.DB) *CreationsPsqlDao {
 }
 
 func (p *CreationsPsqlDao) Insert(ctx context.Context, model model.Creations) error {
-	model.ID = rand.Int32()
+	creation_id, err := uuid.NewUUID()
+	if err != nil {
+		fmt.Errorf("Failed to create uuid",err)
+		return err
+	}
+	model.ID= creation_id
 
-	insertStmt := table.Order.INSERT(table.Creations.AllColumns).MODEL(model)
+	insertStmt := Creations.INSERT(Creations.AllColumns).MODEL(model)
 
-	_, err := insertStmt.ExecContext(ctx, p.Client)
+	_, err = insertStmt.ExecContext(ctx, p.Client)
 	if err != nil {
 		fmt.Errorf("Failed to insert data: %w", err)
 		return err
@@ -40,8 +46,8 @@ func (p *CreationsPsqlDao) Insert(ctx context.Context, model model.Creations) er
 	return nil
 }
 
-func (p *CreationsPsqlDao) Delete(ctx context.Context, id int32) error {
-	deleteStmt := table.Order.DELETE().WHERE(table.Creations.ID.EQ(Int(int64(id))))
+func (p *CreationsPsqlDao) Delete(ctx context.Context, id uuid.UUID) error {
+	deleteStmt := Creations.DELETE().WHERE(Creations.ID.IN(jet.UUID(id)))
 
 	_, err := deleteStmt.ExecContext(ctx, p.Client)
 	if err != nil {
@@ -51,7 +57,11 @@ func (p *CreationsPsqlDao) Delete(ctx context.Context, id int32) error {
 	return nil
 }
 
-func (p *CreationsPsqlDao) Update(ctx context.Context, id int32) (model.Creations, error) {
+func (p *CreationsPsqlDao) Update(ctx context.Context, id uuid.UUID) (model.Creations, error) {
 
 	return model.Creations{}, nil 
+}
+
+func (p *CreationsPsqlDao) List(ctx context.Context, id uuid.UUID) ([]model.Creations, error) {
+	return []model.Creations{}, nil
 }

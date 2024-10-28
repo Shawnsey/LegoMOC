@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/shawnsey/LegoMOC/LegoStore/database/daos"
 	"github.com/shawnsey/LegoMOC/LegoStore/sql/LegoMOC/public/model"
@@ -52,15 +51,7 @@ func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := json.Marshal(order)
-	if err != nil {
-		fmt.Println("failed to marshall", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(res)
-	w.WriteHeader(http.StatusCreated)
+	writeJSONResponse(w,order, 201)
 }
 
 func (o *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
@@ -75,26 +66,11 @@ func (o *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := json.Marshal(orders)
-	if err != nil {
-		log.Printf("Error with marshaling orders, error: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	w.Write(res)
-	w.WriteHeader(http.StatusAccepted)
+	writeJSONResponse(w, orders, 200)
 }
 
 func (o *OrderHandler) Get(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-
-	parsedUUID, err := uuid.Parse(id)
-	if err != nil {
-		fmt.Println("Invalid uuid")
-		w.Write([]byte("Bad Request: Invalid uuid"))
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	parsedUUID := getValidUuid(w, r)
 
 	order,err := o.OrderDao.GetById(r.Context(), parsedUUID)
 	if err != nil {
@@ -103,16 +79,7 @@ func (o *OrderHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := json.Marshal(order)
-	if err != nil {
-		log.Printf("Error with marshaling orders, error: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(res)
-	w.WriteHeader(http.StatusAccepted)
-
+	writeJSONResponse(w, order, 200)
 }
 
 func (o *OrderHandler) Update(w http.ResponseWriter, r *http.Request) {
@@ -124,14 +91,7 @@ func (o *OrderHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	requestBody := daos.OrderUpdateBody{}
 
-	id := chi.URLParam(r, "id")
-	parsedUUID, err := uuid.Parse(id)
-	if err != nil {
-		fmt.Println("Invalid uuid")
-		w.Write([]byte("Bad Request: Invalid uuid"))
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+	parsedUUID := getValidUuid(w, r)
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		fmt.Println("failed to decode", err)
@@ -172,32 +132,15 @@ func (o *OrderHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	} 
 	
-	res, err := json.Marshal(updatedOrder)
-	if err != nil {
-		fmt.Println("failed to marshall", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(res)
-	w.WriteHeader(http.StatusAccepted)
-
+	writeJSONResponse(w, updatedOrder, 202)
 }
 
 func (o *OrderHandler) DeleteById(w http.ResponseWriter, r *http.Request) {
 
-	id := chi.URLParam(r, "id")
-	fmt.Printf("uuid from path: %s", id)
+	parsedUUID := getValidUuid(w, r)
 
-	parsedUUID, err := uuid.Parse(id)
-	if err != nil {
-		fmt.Println("Invalid uuid")
-		w.Write([]byte("Bad Request: Invalid uuid"))
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
 
-	err = o.OrderDao.Delete(r.Context(), parsedUUID)
+	err := o.OrderDao.Delete(r.Context(), parsedUUID)
 	if err != nil {
 		fmt.Println("Failed to delete order")
 		w.WriteHeader(http.StatusInternalServerError)

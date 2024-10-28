@@ -5,48 +5,58 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
 	"github.com/shawnsey/LegoMOC/LegoStore/database/daos"
 	"github.com/shawnsey/LegoMOC/LegoStore/handler"
-	// jwtmiddleware "github.com/shawnsey/LegoMOC/LegoStore/middleware"
 )
 
 func (app *App) loadRoutes() {
-	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
+	r.Group(func(router chi.Router) {
+		router.Route("/orders", app.loadOrderRoutes)
+	})
 
-	router.Route("/orders", app.loadOrderRoutes)
-	router.Route("/creations", app.loadCreationRoutes)
+	r.Group(func(router chi.Router) {
+		r.Route("/creations", app.loadCreationRoutes)
+	})
+	
 
-	app.router = router
+	app.router = r
 }
 
-func (app *App) loadOrderRoutes(router chi.Router) {
+func (app *App) loadOrderRoutes(r chi.Router) {
 	orderHandler := handler.OrderHandler{
 		OrderDao: daos.NewOrderPsqlDao(app.DB),
 		}
 	
-	router.Post("/", orderHandler.Create)
-	router.Get("/", orderHandler.List)
-	router.Get("/{id}", orderHandler.Get)
-	router.Put("/{id}", orderHandler.Update)
-	router.Delete("/{id}", orderHandler.DeleteById)
-
+	r.Post("/", orderHandler.Create)
+	r.Get("/", orderHandler.List)
+		r.Route("/{id}", func(r chi.Router) {
+			r.Get("/", orderHandler.Get)
+			r.Put("/", orderHandler.Update)
+			r.Delete("/", orderHandler.DeleteById)
+		})
 }
 
-func (app *App) loadCreationRoutes(router chi.Router) {
+func (app *App) loadCreationRoutes(r chi.Router) {
 	creationHandler := handler.CreationsHandler{
 		CreationsDao: &daos.CreationsPsqlDao{
 			Client: app.DB,
 		},
 	}
 
-	router.Post("/", creationHandler.Create)
-	router.Get("/", creationHandler.List)
-	router.Get("/search", creationHandler.Search)
-	router.Get("/{id}", creationHandler.GetById)
-	router.Put("/{id}", creationHandler.UpdateById)
-	router.Delete("/{id}", creationHandler.DeleteById)
+	r.Post("/", creationHandler.Create)
+	r.Get("/", creationHandler.List)
+	r.Get("/search", creationHandler.Search)
+	r.Route("/{id}", func(r chi.Router) {
+		r.Get("/", creationHandler.GetById)
+		r.Put("/", creationHandler.UpdateById)
+		r.Delete("/", creationHandler.DeleteById)
+	})
+
+
 }

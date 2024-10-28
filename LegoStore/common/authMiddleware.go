@@ -1,6 +1,6 @@
 // middleware/jwt.go
 
-package middleware
+package common
 
 import (
 	"context"

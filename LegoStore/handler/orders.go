@@ -30,7 +30,7 @@ func (o *OrderHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	order_id, err := uuid.NewUUID()
 	if err != nil {
-		fmt.Errorf("Failed to create uuid",err)
+		fmt.Println("Failed to create uuid",err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -70,7 +70,7 @@ func (o *OrderHandler) List(w http.ResponseWriter, r *http.Request) {
 }
 
 func (o *OrderHandler) Get(w http.ResponseWriter, r *http.Request) {
-	parsedUUID := getValidUuid(w, r)
+	parsedUUID := getValidUuid(r)
 
 	order,err := o.OrderDao.GetById(r.Context(), parsedUUID)
 	if err != nil {
@@ -91,17 +91,17 @@ func (o *OrderHandler) Update(w http.ResponseWriter, r *http.Request) {
 	}
 	requestBody := daos.OrderUpdateBody{}
 
-	parsedUUID := getValidUuid(w, r)
+	parsedUUID := getValidUuid(r)
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		fmt.Println("failed to decode", err)
-		w.Write([]byte("Bad Request: Request body malformation"))
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Bad Request: Request body malformation"))
 		return
 	}
 	if (body.ShippedAt == nil && body.CompletedAt == nil) {
-		w.Write([]byte("Bad Request: No data to update in request"))
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Bad Request: No data to update in request"))
 		return
 	}
 	if body.ShippedAt != nil{
@@ -137,7 +137,7 @@ func (o *OrderHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 func (o *OrderHandler) DeleteById(w http.ResponseWriter, r *http.Request) {
 
-	parsedUUID := getValidUuid(w, r)
+	parsedUUID := getValidUuid(r)
 
 
 	err := o.OrderDao.Delete(r.Context(), parsedUUID)

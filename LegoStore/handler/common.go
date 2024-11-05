@@ -28,15 +28,9 @@ func writeJSONResponse(w http.ResponseWriter, data interface{}, statusCode int) 
 }
 
 // todo: rework this to be a middleware that just does the validation part.
-func getValidUuid(w http.ResponseWriter, r *http.Request) uuid.UUID {
+func getValidUuid(r *http.Request) uuid.UUID {
 	id := chi.URLParam(r, "id")
-	parsedUUID, err := uuid.Parse(id)
-	if err != nil {
-		fmt.Println("Invalid uuid")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Bad Request: Invalid uuid"))
-		
-		return uuid.Nil
-	}
+	parsedUUID, err:= uuid.Parse(id)
+	println("error",err)
 	return parsedUUID
 }

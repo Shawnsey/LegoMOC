@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"github.com/shawnsey/LegoMOC/LegoStore/common"
 	"github.com/shawnsey/LegoMOC/LegoStore/database/daos"
 	"github.com/shawnsey/LegoMOC/LegoStore/handler"
 )
@@ -36,6 +37,7 @@ func (app *App) loadOrderRoutes(r chi.Router) {
 	r.Post("/", orderHandler.Create)
 	r.Get("/", orderHandler.List)
 		r.Route("/{id}", func(r chi.Router) {
+			r.Use(common.ValidateParams)
 			r.Get("/", orderHandler.Get)
 			r.Put("/", orderHandler.Update)
 			r.Delete("/", orderHandler.DeleteById)
@@ -53,6 +55,7 @@ func (app *App) loadCreationRoutes(r chi.Router) {
 	r.Get("/", creationHandler.List)
 	r.Get("/search", creationHandler.Search)
 	r.Route("/{id}", func(r chi.Router) {
+		r.Use(common.ValidateParams)
 		r.Get("/", creationHandler.GetById)
 		r.Put("/", creationHandler.UpdateById)
 		r.Delete("/", creationHandler.DeleteById)

@@ -34,27 +34,49 @@ type OrderUpdateBody struct {
 func NewOrderPsqlDao(db *sql.DB) *OrderPsqlDao {
 	return &OrderPsqlDao{Client: db}
 }
+
+func fail(err error) (int64, error) {
+	return 0, fmt.Errorf("CreateOrder: %v", err)
+}
 // create works
 func (p *OrderPsqlDao) Insert(ctx context.Context, model model.Orders) error {
+	tx, err := p.Client.BeginTx(ctx, nil)
+	if err != nil {
+		fail(err)
+	}
+	defer tx.Rollback()
 
 	insertStmt := Orders.INSERT(Orders.OrderID, Orders.CustomerID, Orders.LineItems, Orders.CreatedAt).MODEL(model)
 
-	_, err := insertStmt.ExecContext(ctx, p.Client)
+	_, err = insertStmt.ExecContext(ctx, tx)
 	if err != nil {
 		fmt.Errorf("Failed to insert data: %w", err)
 		return err
 	}
+
+	if err = tx.Commit(); err != nil {
+        return err
+    }
 	return nil
 }
 // Delete works
 func (p *OrderPsqlDao) Delete(ctx context.Context, id uuid.UUID) error {
+	tx, err := p.Client.BeginTx(ctx, nil)
+	if err != nil {
+		fail(err)
+	}
+	defer tx.Rollback()
+
 	deleteStmt := Orders.DELETE().WHERE(Orders.OrderID.IN(jet.UUID(id)))
 
-	_, err := deleteStmt.ExecContext(ctx, p.Client)
+	_, err = deleteStmt.ExecContext(ctx, tx)
 	if err != nil {
 		fmt.Errorf("Entry failed to be deleted %w", err)
 		return err
 	}
+	if err = tx.Commit(); err != nil {
+        return err
+    }
 	return nil
 }
 
@@ -73,6 +95,12 @@ func (p *OrderPsqlDao) GetById(ctx context.Context, id uuid.UUID) (struct{model.
 }
 // update works
 func (p *OrderPsqlDao) Update(ctx context.Context, update OrderUpdateBody) (model.Orders, error) {
+	tx, err := p.Client.BeginTx(ctx, nil)
+	if err != nil {
+		fail(err)
+	}
+	defer tx.Rollback()
+
 	var updateStmt jet.UpdateStatement
 	if (!update.ShippedAt.IsZero() && !update.CompletedAt.IsZero()){
 		updateStmt = Orders.UPDATE(Orders.ShippedAt, Orders.CompletedAt).
@@ -89,11 +117,14 @@ func (p *OrderPsqlDao) Update(ctx context.Context, update OrderUpdateBody) (mode
 	}
 	fmt.Printf("query after Where: %s", updateStmt.DebugSql())
 	res := model.Orders{}
-	err := updateStmt.QueryContext(ctx, p.Client, &res)
+	err = updateStmt.QueryContext(ctx, tx, &res)
 	if err != nil {
 		fmt.Errorf("Failed when updating row %w", err)
 		return model.Orders{}, err
 	}
+	if err = tx.Commit(); err != nil {
+        return model.Orders{}, err
+    }
 	return res, nil
 }
 
